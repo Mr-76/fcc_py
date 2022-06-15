@@ -53,10 +53,10 @@ def add_time(hora_inicial,hora_adicional,day = ""):
     if (final_hour > 12 and final_hour != 24):
         final_hour = (final_hour - 12)
         string_time = "PM"
-    elif (final_hour < 12):
+    elif (final_hour < 12 and final_hour != 0):
         final_hour = (final_hour - 0)
         string_time = "AM"
-    elif (final_hour == 24):
+    elif (final_hour == 24 or final_hour == 0):
         final_hour = 12
         string_time = "AM"
     elif (final_hour == 12):
