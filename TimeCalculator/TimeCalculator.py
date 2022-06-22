@@ -1,8 +1,9 @@
 def add_time(hora_inicial,hora_adicional,day = ""):
-    WEEK_DAYS= ["Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday", "Sunday"]
+    WEEK_DAYS= ["monday", "tuesday", "wednesday", "thursday",
+                "friday", "saturday", "sunday"]
     
     #usar formato 24 horas
+    day = day.lower()
     list_time = hora_inicial.split(" ")
     list_time = list_time[0].split(":") + [list_time[1]]
     list_time.append(day)
@@ -37,7 +38,7 @@ def add_time(hora_inicial,hora_adicional,day = ""):
 
     final_hour = (final_hour) + (final_minute//int(60)) 
     
-    final_minute = (final_minute//60  + final_minute % 60) 
+    final_minute = (final_minute % 60) 
     string_time_day = '' 
     if (final_hour < 24):
         final_hour = final_hour
@@ -47,9 +48,18 @@ def add_time(hora_inicial,hora_adicional,day = ""):
         final_hour = final_hour % 24
         if (days == 1):
             string_time_day = "(next day)"
-        elif (days > 1):
-            string_time_day = ("{} days later".format(days))
-    
+        elif (days > 1 and day == ""):
+            string_time_day = ("({} days later)".format(days))
+   
+        elif (days > 1 and day !=""):
+            index_day = WEEK_DAYS.index(day)
+            index_day += days
+            final_index_day = index_day % 7
+            string_day = WEEK_DAYS[final_index_day]
+            string_day = string_day[0].upper() + string_day[1:]
+            string_time_day = ("{} ({} days later)".format(string_day,days))
+        else:
+            pass
     if (final_hour > 12 and final_hour != 24):
         final_hour = (final_hour - 12)
         string_time = "PM"
@@ -65,8 +75,24 @@ def add_time(hora_inicial,hora_adicional,day = ""):
     else:
         print("dont know that case")
     
-    return ("{}:{} {} {} ".format(final_hour,final_minute,string_time,string_time_day))
-
+    if (string_time_day == ""):
+        if (day != ""):
+            day = day[0].upper() + day[1:]
+            return ("{}:{} {}, {}".format(final_hour,str(final_minute).zfill(2),string_time,day))
+        else:
+            return ("{}:{} {}".format(final_hour,str(final_minute).zfill(2),string_time))
+    elif (string_time_day == "(next day)"):
+        if (day != ""):
+            final_index = ((WEEK_DAYS.index(day) + 1) % 7)
+            day = WEEK_DAYS[final_index]
+            day = day[0].upper() + day[1:]
+            return ("{}:{} {}, {} {}".format(final_hour,str(final_minute).zfill(2),string_time,day,string_time_day))
+        else:
+            return ("{}:{} {} {}".format(final_hour,str(final_minute).zfill(2),string_time,string_time_day))
+    elif (string_time_day != "" and day == ""):
+        return ("{}:{} {} {}".format(final_hour,str(final_minute).zfill(2),string_time,string_time_day))
+    else:
+        return ("{}:{} {}, {}".format(final_hour,str(final_minute).zfill(2),string_time,string_time_day))
 def main():
     print(add_time("11:43 PM","24:20","tueSday"))
     print(add_time("4:00 PM", "3:11","monday"))
